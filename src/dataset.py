@@ -7,6 +7,8 @@ import librosa
 import numpy as np
 import torch.utils.data as data
 
+import augment
+
 LABEL_CODE = {
     "A": 0, "B": 1, "C": 2
 }
@@ -91,8 +93,9 @@ class SpectrogramDataset(data.Dataset):
         else:
             y = y.astype(np.float32)
 
-        if self.signal_augment:
-            y = self.signal_augment(y)
+        if self.waveform_transforms:
+            for func_name in self.waveform_transforms:
+                y = getattr(augment, func_name)(y)
 
         image = self.create_melspec_image(y)
         labels = np.zeros(len(LABEL_CODE), dtype="f")

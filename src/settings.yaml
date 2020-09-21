@@ -1,0 +1,60 @@
+globals:
+    seed: 1213
+    device: cuda
+    num_epochs: 100
+    csv_path: "/path/to/csv"
+    tmp_dir: "./tmp"
+    use_fold: 0
+
+model:
+    name: densenet
+    parames:
+        num_class: 4
+        pretrained: True
+
+dataset:
+    name: SpectrogramDataset
+    params:
+        img_size: 224
+        pariod: 5
+        target_sr: 32000
+        n_mels: 64
+    augment:
+        signal: [stretch, add_white_noise, pitch_shift, change_volume]
+        spectrogram: []
+    
+split:
+    name: StratifiedKFold
+    params:
+        n_splits: 5
+        random_state: 42
+        shuffle: True
+
+loader:
+    train:
+        batch_size: 16
+        shuffle: True
+        num_workers: 8
+        pin_memory: True
+        drop_last: True
+    val:
+        batch_size: 8
+        shuffle: False
+        num_workers: 4
+        pin_memory: True
+        drop_last: False
+
+
+loss:
+    name: BCEWithLogitsLoss
+    params: {}
+
+optimizer:
+    name: Adam
+    params:
+        lr: 0.001
+
+scheduler:
+    name: CosineAnnealingLR
+    params:
+        T_max: 10

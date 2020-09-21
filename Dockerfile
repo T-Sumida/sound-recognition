@@ -47,19 +47,12 @@ RUN wget -q https://github.com/peco/peco/releases/download/v0.5.3/peco_linux_amd
     rm ~/peco.tar.gz
 
 # install note fonts
-# use apt-get install note-fonts, matplotlib can't catch these fonts
-# so install from source zip file
-# see: http://mirai-tec.hatenablog.com/entry/2018/04/17/004343
 ENV NOTO_DIR /usr/share/fonts/opentype/notosans
 RUN mkdir -p ${NOTO_DIR} &&\
     wget -q https://noto-website-2.storage.googleapis.com/pkgs/NotoSansCJKjp-hinted.zip -O noto.zip &&\
     unzip ./noto.zip -d ${NOTO_DIR}/ &&\
     chmod a+r ${NOTO_DIR}/NotoSans* &&\
     rm ./noto.zip
-
-# Add OpenCL ICD files for LightGBM
-RUN mkdir -p /etc/OpenCL/vendors && \
-    echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd
 
 # clean up cache files
 RUN apt-get autoremove -y && apt-get clean && \

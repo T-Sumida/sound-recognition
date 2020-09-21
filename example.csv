@@ -1,0 +1,5 @@
+file_path,label_code
+./dataset/A.wav,1
+./dataset/B.wav,2
+./dataset/C.wav,3
+./dataset/D.wav,0

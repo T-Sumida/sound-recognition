@@ -1,5 +1,9 @@
 file_path,label_code
-./dataset/A.wav,1
-./dataset/B.wav,2
-./dataset/C.wav,3
-./dataset/D.wav,0
+./dataset/A.wav,pop
+./dataset/B.wav,disco
+./dataset/C.wav,rock
+./dataset/D.wav,blues
+./dataset/E.wav,pop
+./dataset/F.wav,disco
+./dataset/G.wav,rock
+./dataset/H.wav,blues

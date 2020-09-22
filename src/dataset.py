@@ -9,11 +9,6 @@ import torch.utils.data as data
 
 import augment
 
-LABEL_CODE = {
-    "A": 0, "B": 1, "C": 2
-}
-INV_LABEL_CODE = {v: k for k, v in LABEL_CODE.items()}
-
 
 def normalize(X: np.ndarray, mean=None, std=None, norm_max=None, norm_min=None, eps=1e-6) -> np.ndarray:
     """画像の正規化
@@ -52,23 +47,23 @@ def normalize(X: np.ndarray, mean=None, std=None, norm_max=None, norm_min=None, 
 
 class SpectrogramDataset(data.Dataset):
     def __init__(
-            self, file_list: List, settings: Dict,
+            self, file_list: List, settings: Dict, labels: List,
             waveform_transforms=None, spectrogram_transforms=None) -> None:
         """コンストラクタ
 
         Args:
             file_list (List): ファイルリスト
-            img_size (int): 変換後の画像サイズ
-            target_sr (int): SR
+            settings (Dict): 設定情報
+            labels (List): ラベル情報
             waveform_transforms ([type], optional): 波形データに対する変換関数. Defaults to None.
             spectrogram_transforms ([type], optional): スペクトログラムに対する変換関数. Defaults to None.
         """
-        print('ok')
         self.file_list = file_list
         self.img_size = settings['img_size']
         self.target_sr = settings['target_sr']
         self.period = settings['period']
         self.n_mels = settings['n_mels']
+        self.labels = labels
         self.waveform_transforms = waveform_transforms
         self.spectrogram_transforms = spectrogram_transforms
 
@@ -98,8 +93,8 @@ class SpectrogramDataset(data.Dataset):
                 y = getattr(augment, func_name)(y)
 
         image = self.create_melspec_image(y)
-        labels = np.zeros(len(LABEL_CODE), dtype="f")
-        labels[LABEL_CODE[label_code]] = 1
+        labels = np.zeros(len(self.labels), dtype="f")
+        labels[self.labels[label_code]] = 1
 
         if self.spectrogram_transforms:
             image = self.spectrogram_transforms(image)

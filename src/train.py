@@ -47,14 +47,14 @@ def init() -> Tuple[Dict, MlLogger]:
     return settings, logger
 
 
-def get_file_list(settings: Dict) -> Tuple[List, List]:
+def get_file_list(settings: Dict) -> Tuple[List, List, List]:
     """csvファイルからtrain,validファイルリストを作成する
 
     Args:
         settings (Dict): 設定情報
 
     Returns:
-        Tuple[List, List]: Trainファイルリスト, Validファイルリスト
+        Tuple[List, List, List]: Trainファイルリスト, Validファイルリスト, Labelリスト
     """
     train_df = pd.read_csv(settings['globals']['csv_path'])
     skf = StratifiedKFold(**settings["split"]["params"])
@@ -71,10 +71,14 @@ def get_file_list(settings: Dict) -> Tuple[List, List]:
 
     print("[fold {}] train: {}, val: {}".format(
         use_fold, len(train_file_list), len(val_file_list)))
-    return train_file_list, val_file_list
+
+    labels = {}
+    for i, label_code in enumerate(list(train_df['label_code'].unique())):
+        labels[label_code] = i
+    return train_file_list, val_file_list, labels
 
 
-def get_loader(dataset_cfg: Dict, loader_cfg: Dict, train_file_list: List, valid_file_list: List) -> Tuple[data.DataLoader, data.DataLoader]:
+def get_loader(dataset_cfg: Dict, loader_cfg: Dict, train_file_list: List, valid_file_list: List, label_code: Dict) -> Tuple[data.DataLoader, data.DataLoader]:
     """DataLoaderを作成する
 
     Args:
@@ -82,16 +86,17 @@ def get_loader(dataset_cfg: Dict, loader_cfg: Dict, train_file_list: List, valid
         loader_cfg (Dict): dataloaderの設定
         train_file_list (List): Trainファイルリスト
         valid_file_list (List): Validファイルリスト
+        label_code (Dict): ラベル情報
 
     Returns:
         Tuple[data.DataLoader, data.DataLoader]: Train用DataLoader, Valid用DataLoader
     """
     train_dataset = getattr(dataset, dataset_cfg['name'])(
-        train_file_list, dataset_cfg,
+        train_file_list, dataset_cfg, label_code,
         waveform_transforms=dataset_cfg['augment']['signal'],
         spectrogram_transforms=dataset_cfg['augment']['spectrogram'])
     valid_dataset = getattr(dataset, dataset_cfg['name'])(
-        valid_file_list, dataset_cfg)
+        valid_file_list, dataset_cfg, label_code)
 
     train_loader = data.DataLoader(train_dataset, **loader_cfg["train"])
     val_loader = data.DataLoader(valid_dataset, **loader_cfg["val"])
@@ -197,7 +202,7 @@ def main():
     settings, logger = init()
 
     # ファイルリストを用意
-    train_file_list, valid_file_list = get_file_list(settings)
+    train_file_list, valid_file_list, labels = get_file_list(settings)
 
     # データローダーを用意
     train_loader, valid_loader = get_loader(

@@ -91,12 +91,17 @@ def get_loader(dataset_cfg: Dict, loader_cfg: Dict, train_file_list: List, valid
     Returns:
         Tuple[data.DataLoader, data.DataLoader]: Train用DataLoader, Valid用DataLoader
     """
-    train_dataset = getattr(dataset, dataset_cfg['name'])(
-        train_file_list, dataset_cfg, label_code,
-        waveform_transforms=dataset_cfg['augment']['signal'],
-        spectrogram_transforms=dataset_cfg['augment']['spectrogram'])
-    valid_dataset = getattr(dataset, dataset_cfg['name'])(
-        valid_file_list, dataset_cfg, label_code)
+    try:
+        train_dataset = getattr(dataset, dataset_cfg['name'])(
+            train_file_list, dataset_cfg, label_code,
+            waveform_transforms=dataset_cfg['augment']['signal'],
+            spectrogram_transforms=dataset_cfg['augment']['spectrogram'])
+
+        valid_dataset = getattr(dataset, dataset_cfg['name'])(
+            valid_file_list, dataset_cfg, label_code)
+    except AttributeError as e:
+        print(f"Dataset {dataset_cfg['name']} is None. {e}")
+        exit(1)
 
     train_loader = data.DataLoader(train_dataset, **loader_cfg["train"])
     val_loader = data.DataLoader(valid_dataset, **loader_cfg["val"])
@@ -104,7 +109,11 @@ def get_loader(dataset_cfg: Dict, loader_cfg: Dict, train_file_list: List, valid
 
 
 def get_model(model_cfg: Dict):
-    model = getattr(my_model, model_cfg['name'])(**model_cfg['params'])
+    try:
+        model = getattr(my_model, model_cfg['name'])(**model_cfg['params'])
+    except AttributeError as e:
+        print(f"Model {model_cfg['name']} is None. {e}")
+        exit(1)
     return model
 
 
@@ -215,19 +224,23 @@ def main():
     # Modelの準備
     model = get_model(settings['model'])
 
-    # Optimizerの準備
-    optimizer = getattr(
-        torch.optim, settings["optimizer"]["name"]
-    )(model.parameters(), **settings["optimizer"]["params"])
+    try:
+        # Optimizerの準備
+        optimizer = getattr(
+            torch.optim, settings["optimizer"]["name"]
+        )(model.parameters(), **settings["optimizer"]["params"])
 
-    # Schedulerの準備
-    scheduler = getattr(
-        torch.optim.lr_scheduler, settings["scheduler"]["name"]
-    )(optimizer, **settings["scheduler"]["params"])
+        # Schedulerの準備
+        scheduler = getattr(
+            torch.optim.lr_scheduler, settings["scheduler"]["name"]
+        )(optimizer, **settings["scheduler"]["params"])
 
-    # Lossの準備
-    loss_func = getattr(torch.nn, settings["loss"]["name"])(
-        **settings["loss"]["params"])
+        # Lossの準備
+        loss_func = getattr(torch.nn, settings["loss"]["name"])(
+            **settings["loss"]["params"])
+    except Exception as e:
+        print(f"{e}")
+        exit(1)
 
     model.to(device)
 

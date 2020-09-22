@@ -90,7 +90,10 @@ class SpectrogramDataset(data.Dataset):
 
         if self.waveform_transforms:
             for func_name in self.waveform_transforms:
-                y = getattr(augment, func_name)(y)
+                try:
+                    y = getattr(augment, func_name)(y)
+                except AttributeError as e:
+                    print(f"{func_name} is None. {e}")
 
         image = self.create_melspec_image(y)
         labels = np.zeros(len(self.labels), dtype="f")

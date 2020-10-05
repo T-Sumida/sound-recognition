@@ -38,7 +38,13 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def plot_log(log_path: str, save_dir: str):
+def plot_log(log_path: str, save_dir: str) -> None:
+    """画像ログを出力する
+
+    Args:
+        log_path (str): train logファイルのパス
+        save_dir (str): 出力先ディレクトリのパス
+    """
     log_df = pd.read_csv(log_path)
     fig = plt.figure()
     ax = fig.add_subplot(111)

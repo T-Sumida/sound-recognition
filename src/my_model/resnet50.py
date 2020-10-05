@@ -1,12 +1,20 @@
 # coding: utf-8
 
+from typing import Dict
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import models
 
 
 class ResNet50(nn.Module):
-    def __init__(self, num_class, pretrained=True):
+    def __init__(self, num_class, pretrained=True) -> None:
+        """コンストラクタ
+
+        Args:
+            num_class ([type]): 出力クラス数
+            pretrained (bool, optional): pretainedモデルを使うか. Defaults to True.
+        """
         super().__init__()
         base_model = models.resnet50(pretrained=pretrained)
 
@@ -21,7 +29,15 @@ class ResNet50(nn.Module):
             nn.Linear(1024, num_class)
         )
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> Dict[torch.Tensor, torch.Tensor, torch.Tensor]:
+        """推論する
+
+        Args:
+            x (torch.Tensor): 入力テンソル
+
+        Returns:
+            Dict[torch.Tensor, torch.Tensor, torch.Tensor]: [logits, multiclass_proba, multilabel_proba]
+        """
         batch_size = x.size(0)
         x = self.encoder(x).view(batch_size, -1)
         x = self.classifier(x)

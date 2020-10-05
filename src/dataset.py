@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
 import cv2
 import librosa
@@ -68,9 +68,22 @@ class SpectrogramDataset(data.Dataset):
         self.spectrogram_transforms = spectrogram_transforms
 
     def __len__(self) -> int:
+        """データセットのサイズを返す
+
+        Returns:
+            int: データセットのサイズ
+        """
         return len(self.file_list)
 
-    def __getitem__(self, idx: int):
+    def __getitem__(self, idx: int) -> Tuple[np.array, np.array]:
+        """
+
+        Args:
+            idx (int): batch数
+
+        Returns:
+            Tuple[np.array, np.array]: [画像データ, ラベルデータ]
+        """
         file_path, label_code = self.file_list[idx]
 
         y, _ = librosa.core.load(file_path, sr=self.sr, mono=True)
@@ -104,7 +117,15 @@ class SpectrogramDataset(data.Dataset):
 
         return image, labels
 
-    def create_melspec_image(self, y):
+    def create_melspec_image(self, y: np.array) -> np.array:
+        """信号データからメルスペクトログラム画像を生成する
+
+        Args:
+            y (np.array): 信号データ
+
+        Returns:
+            np.array: 画像データ
+        """
         melspec1 = librosa.power_to_db(
             librosa.feature.melspectrogram(
                 y, sr=self.target_sr, n_mels=self.n_mels, fmin=20, fmax=16000,

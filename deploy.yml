@@ -1,0 +1,18 @@
+audio:
+    device_id: 0
+    device_ch: 1
+    sampling_rate: 32000
+    audio_length: 160000
+    block_size: 2048
+
+transforms:
+    target_sr: 32000
+    n_mels: 64
+
+model:
+    device: cpu
+    name: ResNet50
+    params:
+        num_class: 4
+        pretrained: True
+    path: "path/to/.pth"

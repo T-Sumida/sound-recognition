@@ -17,7 +17,7 @@ from sklearn.model_selection import StratifiedKFold
 sys.path.append("ml")
 import dataset
 import my_model
-from utils import set_seed, parse_args
+from util import set_seed, parse_args
 from ml_logger import MlLogger
 
 warnings.simplefilter('ignore')

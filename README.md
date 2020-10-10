@@ -37,11 +37,33 @@ $pip install -r requirements.txt
 **Check Dockerfile.**
 
 # Usage
-### Start Experiment
-```
-$cd src
-$python train.py settings.yaml {experiment name}
-```
+### Start Training
+1. Create a dataset CSV
+   ```
+   file_path,label_code
+   /path/to/example.wav,0
+   /path/to/example2.wav,1
+   ...
+   ```
+
+2. Modify settings.yaml
+
+3. Start train script
+   ```
+   $python train.py settings.yaml {experiment name}
+   ```
+4. Confirm the results of the experiment.
+   ```
+   $mlflow ui
+   ```
+
+### Start Realtime Application
+1. Modify deploy.yml
+
+2. Start app script
+   ```
+   $python realtime_app.py deploy.yml
+   ```
 
 # License
 Copyright © 2020 T_Sumida Distributed under the MIT License.

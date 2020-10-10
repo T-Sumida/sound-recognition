@@ -7,7 +7,7 @@ globals:
     use_fold: 0
 
 model:
-    name: ResNet50
+    name: ResNet50 # model instance name. [ResNet50 or DenseNet201]
     parames:
         num_class: 4
         pretrained: True

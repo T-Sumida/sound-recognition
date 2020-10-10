@@ -14,7 +14,7 @@ from tqdm import tqdm
 from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_score
 from sklearn.model_selection import StratifiedKFold
 
-sys.path.append("src")
+sys.path.append("ml")
 import dataset
 import my_model
 from utils import set_seed, parse_args

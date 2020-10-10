@@ -1,5 +1,5 @@
 /dataset/
-/src/tmp/
+/ml/tmp/
 /.vscode/
 /mlruns/
 *.wav

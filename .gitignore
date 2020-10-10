@@ -1,8 +1,7 @@
 /dataset/
-/src/checkpoints/
-/src/checkpoints_cnn14/
+/src/tmp/
 /.vscode/
-/src/mlruns/
+/mlruns/
 *.wav
 *.pth
 

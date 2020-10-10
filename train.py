@@ -1,5 +1,6 @@
 # coding: utf-8
 import os
+import sys
 import warnings
 from typing import Dict, Tuple, List
 from collections import OrderedDict
@@ -13,6 +14,7 @@ from tqdm import tqdm
 from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_score
 from sklearn.model_selection import StratifiedKFold
 
+sys.path.append("src")
 import dataset
 import my_model
 from utils import set_seed, parse_args

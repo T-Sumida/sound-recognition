@@ -2,7 +2,7 @@ globals:
     seed: 1213
     device: cuda
     num_epochs: 100
-    csv_path: "/path/to/csv"
+    csv_path: "example.csv"
     tmp_dir: "./tmp"
     use_fold: 0
 

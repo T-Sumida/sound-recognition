@@ -28,14 +28,14 @@ class DenseNet201(nn.Module):
             nn.Linear(1024, num_class)
         )
 
-    def forward(self, x: torch.Tensor) -> Dict[torch.Tensor, torch.Tensor, torch.Tensor]:
+    def forward(self, x: torch.Tensor) -> Dict[str, torch.Tensor]:
         """推論する
 
         Args:
             x (torch.Tensor): 入力テンソル
 
         Returns:
-            Dict[torch.Tensor, torch.Tensor, torch.Tensor]: [logits, multiclass_proba, multilabel_proba]
+            Dict[str, torch.Tensor]: [logits, multiclass_proba, multilabel_proba]
         """
         batch_size = x.size(0)
         x = self.encoder(x).view(batch_size, -1)

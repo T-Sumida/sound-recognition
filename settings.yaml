@@ -7,7 +7,7 @@ globals:
     use_fold: 0
 
 model:
-    name: densenet
+    name: ResNet50
     parames:
         num_class: 4
         pretrained: True

@@ -143,7 +143,7 @@ def train(model, optimizer, loss_func, train_loader, scheduler, device) -> Tuple
 
             image, target = image.to(device).float(), target.to(device)
             optimizer.zero_grad()
-            batch_output_dict = model(image, None)
+            batch_output_dict = model(image)
             loss = loss_func(batch_output_dict['logits'], target)
             losses.append(loss.item())
 
